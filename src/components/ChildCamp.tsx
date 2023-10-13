@@ -2,19 +2,19 @@ import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
 import ControlPointIcon from '@mui/icons-material/ControlPoint';
 import {
   Box,
-  Button,
   Card,
   Checkbox,
   FormControlLabel,
+  IconButton,
   TextField,
   Typography,
 } from '@mui/material';
-import { useState, useEffect } from 'react';
-import TableAds from './TableAds';
 import Tooltip from '@mui/material/Tooltip';
+import { useState } from 'react';
+import TableAds from './TableAds';
 import './styles.css';
 
-interface Campaigns {
+export interface Campaigns {
   key: number;
   name: string;
   status: boolean;
@@ -43,11 +43,15 @@ const ChildCamp = () => {
       ],
     },
   ]);
-  const [itemActiveCamp, setItemActiveCamp] = useState<any>(subCampaigns[0]);
-
-  const [checkedChildCamp, setCheckedChildCamp] = useState<boolean>(
-    itemActiveCamp.status
+  const [itemActiveCamp, setItemActiveCamp] = useState<Campaigns>(
+    subCampaigns[0]
   );
+
+  console.log('subCampaigns', subCampaigns);
+
+  function calculateTotalQuantity(items: any) {
+    return items.reduce((total: any, item: any) => total + item.quantity, 0);
+  }
 
   const handleAddSubCampaigns = () => {
     setCounter(counter + 1);
@@ -57,7 +61,7 @@ const ChildCamp = () => {
       status: true,
       ads: [
         {
-          key: counter,
+          key: 1,
           name: 'Quảng cáo 1',
           quantity: 0,
         },
@@ -66,26 +70,34 @@ const ChildCamp = () => {
     setSubCampaigns([...subCampaigns, newSubCam]);
   };
 
-  const handleCard = (value: any) => {
-    const itemNew: any = subCampaigns.find((item) => item.key === value);
+  //Active Card when Clicked card
+  const handleCard = (key: number) => {
+    const itemNew: Campaigns = subCampaigns.find(
+      (item) => item.key === key
+    ) as Campaigns;
+
     setItemActiveCamp(itemNew);
   };
 
-  const handleNameCamp = (key: any, e: any) => {
+  const handleNameCamp = (key: number, e: any) => {
     const newItem: Campaigns = subCampaigns.find(
       (item) => item.key === key
     ) as Campaigns;
     if (newItem) {
       newItem.name = e.target.value;
     }
-  };
-  const handleCheckedChildCamp = () => {
-    setCheckedChildCamp(!checkedChildCamp);
-    setItemActiveCamp({ ...itemActiveCamp, status: checkedChildCamp });
+    setItemActiveCamp({ ...itemActiveCamp, name: e.target.value });
   };
 
-  console.log('subCampaigns', subCampaigns);
-  console.log('itemActiveCamp', itemActiveCamp);
+  const handleCheckedChildCamp = (key: number, e: any) => {
+    const newItem: Campaigns = subCampaigns.find(
+      (item) => item.key === key
+    ) as Campaigns;
+    if (newItem) {
+      newItem.status = e.target.checked;
+    }
+    setItemActiveCamp({ ...itemActiveCamp, status: e.target.checked });
+  };
 
   return (
     <Box>
@@ -95,12 +107,12 @@ const ChildCamp = () => {
           margin: '20px',
         }}
       >
-        <Button onClick={handleAddSubCampaigns}>
+        <IconButton onClick={handleAddSubCampaigns}>
           <ControlPointIcon
             fontSize='large'
             style={{ marginRight: 20, cursor: 'pointer' }}
           />
-        </Button>
+        </IconButton>
         <Box
           sx={{
             width: '100%',
@@ -112,29 +124,25 @@ const ChildCamp = () => {
             return (
               <Card
                 key={item.key}
-                style={{
-                  width: 210,
-                  height: 120,
-                  textAlign: 'center',
-                  margin: '10px',
-                  float: 'left',
-                  cursor: 'pointer',
-                  position: 'relative',
-                  // border: ({campActive === item.key ? '2px solid rgb(33, 150, 243)' : ''}),
-                }}
-                // className={'activeCard'}
+                className={
+                  itemActiveCamp.key === item.key ? 'activeCard card' : 'card'
+                }
                 onClick={() => handleCard(item.key)}
               >
-                <Typography style={{ padding: '10px' }}>
-                  {item.name}
-                  <CheckCircleRoundedIcon
-                    fontSize='small'
-                    color={checkedChildCamp ? 'success' : 'action'}
-                    style={{ position: 'relative', top: 3.5 }}
-                  />
-                </Typography>
+                <Tooltip title={item.name} arrow placement='top'>
+                  <Typography style={{ padding: '10px' }}>
+                    {item.name}
+                    <CheckCircleRoundedIcon
+                      fontSize='small'
+                      color={item.status ? 'success' : 'action'}
+                      style={{ position: 'relative', top: 3.5 }}
+                    />
+                  </Typography>
+                </Tooltip>
                 <Tooltip title='Số lượng' arrow placement='left'>
-                  <Typography variant='h6'>0</Typography>
+                  <Typography variant='h6'>
+                    {calculateTotalQuantity(item.ads)}
+                  </Typography>
                 </Tooltip>
               </Card>
             );
@@ -150,8 +158,8 @@ const ChildCamp = () => {
                 required
                 label='Tên chiến dịch con'
                 variant='standard'
-                // value={itemActiveCamp.name}
-                defaultValue={itemActiveCamp.name}
+                value={itemActiveCamp.name}
+                // defaultValue={itemActiveCamp.name}
                 onChange={(e) => handleNameCamp(itemActiveCamp.key, e)}
               />
               <FormControlLabel
@@ -159,7 +167,9 @@ const ChildCamp = () => {
                   <Checkbox
                     defaultChecked
                     checked={itemActiveCamp.status}
-                    onChange={handleCheckedChildCamp}
+                    onChange={(e) =>
+                      handleCheckedChildCamp(itemActiveCamp.key, e)
+                    }
                   />
                 }
                 label='Đang hoạt động'
@@ -179,6 +189,8 @@ const ChildCamp = () => {
           <TableAds
             itemActiveCamp={itemActiveCamp}
             setItemActiveCamp={setItemActiveCamp}
+            subCampaigns={subCampaigns}
+            setSubCampaigns={setSubCampaigns}
           />
         </Box>
       </Box>

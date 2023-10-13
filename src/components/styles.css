@@ -1,5 +1,16 @@
-.activeCard{
-    border: '2px solid rgb(33, 150, 243)';
-    background-color: #000;
-    
+
+.card {
+  width: 210px;
+  height: 120px;
+  text-align: center;
+  margin: 10px;
+  float: left;
+  cursor: pointer;
+  position: relative;
+  border: 2px solid transparent;
 }
+
+.activeCard {
+    border-color: rgb(33, 150, 243);
+  }
+
