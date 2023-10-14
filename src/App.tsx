@@ -49,19 +49,6 @@ function App() {
     setValue(newValue);
   };
 
-  // const onSubmit = (e: any) => {
-  //   e.preventDefault();
-  //   if (inputs.name.trim() === '') {
-  //     alert('Vui lòng điền đúng và đầy đủ thông tin');
-  //     return;
-  //   }
-  //   // const bien = subCampaigns.map((item: any) => {
-  //   //   delete item.key;
-  //   //   return { ...item };
-  //   // });
-  //   // console.log('bien', bien);
-  // };
-
   // handle when change input
   const handleChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputs((prevState) => ({
@@ -76,10 +63,22 @@ function App() {
     formState: { errors },
   } = useForm();
 
+  //onSubmit form and format data
   const onSubmit = (data: any) => {
     console.log('data', data);
 
-    const newData = { campaign: { information: inputs, subCampaigns } };
+    const newSubCampaigns = subCampaigns.map((itemSub: any) => {
+      delete itemSub.key;
+      itemSub.ads.map((itemAds: any) => {
+        delete itemAds.key;
+        return { ...itemAds };
+      });
+      return { ...itemSub };
+    });
+
+    const newData = {
+      campaign: { information: inputs, subCampaigns: newSubCampaigns },
+    };
 
     alert(JSON.stringify(newData));
   };

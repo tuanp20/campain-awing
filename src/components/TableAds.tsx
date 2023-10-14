@@ -14,6 +14,7 @@ import { FieldValues, UseFormRegister } from 'react-hook-form';
 
 interface ITableAds {
   itemActiveCamp: Campaigns;
+  setItemActiveCamp: (e: Campaigns) => void;
   subCampaigns: Campaigns[];
   setSubCampaigns: (e: Campaigns[]) => void;
   register: UseFormRegister<FieldValues>;
@@ -28,6 +29,7 @@ interface typeAds {
 
 export default function TableAds({
   itemActiveCamp,
+  setItemActiveCamp,
   subCampaigns,
   setSubCampaigns,
 }: ITableAds) {
@@ -67,6 +69,9 @@ export default function TableAds({
     };
 
     setAds([...ads, newItem]);
+
+    //Thêm cả ở thằng đang active nữa
+    // setItemActiveCamp()
 
     setData(key, [...ads, newItem]);
   };
@@ -189,7 +194,6 @@ export default function TableAds({
         </TableHead>
         <TableBody>
           {ads?.map((item: typeAds) => {
-            console.log('item.quantity', item.quantity);
             return (
               <TableRow
                 key={item.key}
@@ -224,7 +228,7 @@ export default function TableAds({
                   <TextField
                     type='number'
                     required
-                    error={item.quantity < 0 || item.quantity === 0}
+                    error={item.quantity < 0}
                     variant='standard'
                     fullWidth
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) =>

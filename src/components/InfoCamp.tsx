@@ -21,14 +21,14 @@ const InfoCamp = ({
     <Box>
       <TextField
         {...register('name', { required: 'Dữ liệu không hợp lệ' })}
-        error={!!errors?.name}
-        helperText={errors?.name ? errors.name.message?.toString() : ''}
-        required
         label='Tên chiến dịch'
         variant='standard'
         fullWidth
         value={inputs.name}
         onChange={handleChangeInput}
+        error={!!errors?.name}
+        helperText={errors?.name ? errors.name.message?.toString() : ''}
+        required
       />
       <TextField
         label='Mô tả'

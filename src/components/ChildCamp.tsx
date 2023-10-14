@@ -35,7 +35,6 @@ const ChildCamp = ({
     subCampaigns[0]
   );
 
-  console.log('errors', errors);
   // calculate Total Quantity
   function calculateTotalQuantity(items: any) {
     return items.reduce((total: any, item: any) => total + item.quantity, 0);
@@ -70,31 +69,28 @@ const ChildCamp = ({
 
   // change name of Camp
   const handleNameCamp = (key: number, e: any) => {
-    const newSubCampaign: any = subCampaigns.map((item: Campaigns) => {
-      if (item.key === key) {
-        return { ...item, name: e.target.value };
-      }
-      return item;
-    });
-
-    setSubCampaigns(newSubCampaign);
-
+    const newItem: Campaigns = subCampaigns.find(
+      (item) => item.key === key
+    ) as Campaigns;
+    if (newItem) {
+      newItem.name = e.target.value;
+    }
     setItemActiveCamp({ ...itemActiveCamp, name: e.target.value });
   };
 
   //checked Child Camp
   const handleCheckedChildCamp = (key: number, e: any) => {
-    const newSubCampaign: any = subCampaigns.map((item: Campaigns) => {
-      if (item.key === key) {
-        return { ...item, status: e.target.checked };
-      }
-      return item;
-    });
-
-    setSubCampaigns(newSubCampaign);
+    const newItem: Campaigns = subCampaigns.find(
+      (item) => item.key === key
+    ) as Campaigns;
+    if (newItem) {
+      newItem.status = e.target.checked;
+    }
 
     setItemActiveCamp({ ...itemActiveCamp, status: e.target.checked });
   };
+
+  console.log('itemActiveCamp', itemActiveCamp);
 
   return (
     <Box>
@@ -193,6 +189,7 @@ const ChildCamp = ({
 
           <TableAds
             itemActiveCamp={itemActiveCamp}
+            setItemActiveCamp={setItemActiveCamp}
             subCampaigns={subCampaigns}
             setSubCampaigns={setSubCampaigns}
             register={register}
