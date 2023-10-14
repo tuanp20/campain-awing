@@ -9,7 +9,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import { useEffect, useState } from 'react';
-import { Campaigns } from '../App';
+import { Campaigns, typeAds } from '../App';
 import { FieldValues, UseFormRegister } from 'react-hook-form';
 
 interface ITableAds {
@@ -21,12 +21,6 @@ interface ITableAds {
   errors: any;
 }
 
-interface typeAds {
-  key: number;
-  name: string;
-  quantity: number;
-}
-
 export default function TableAds({
   itemActiveCamp,
   setItemActiveCamp,
@@ -35,11 +29,11 @@ export default function TableAds({
 }: ITableAds) {
   useEffect(() => {
     setAds(itemActiveCamp?.ads);
-    setCounter(itemActiveCamp?.ads[itemActiveCamp?.ads.length - 1]?.key + 1);
+    setCounter(itemActiveCamp?.ads[itemActiveCamp?.ads.length - 1]?.key + 1 || 1);
   }, [itemActiveCamp]);
 
   const [counter, setCounter] = useState(
-    itemActiveCamp?.ads[itemActiveCamp?.ads.length - 1]?.key + 1
+    itemActiveCamp?.ads[itemActiveCamp?.ads.length - 1]?.key + 1 || 1
   );
   const [selected, setSelected] = useState<string[]>([]);
 
@@ -55,6 +49,9 @@ export default function TableAds({
       }
       return item;
     });
+
+    setItemActiveCamp({ ...itemActiveCamp, ads: newAds })
+
     setSubCampaigns(newSubCampaign);
   };
 
@@ -70,8 +67,10 @@ export default function TableAds({
 
     setAds([...ads, newItem]);
 
+    console.log('itemActiveCamp', itemActiveCamp)
+
     //Thêm cả ở thằng đang active nữa
-    // setItemActiveCamp()
+    setItemActiveCamp({ ...itemActiveCamp, ads: [...ads, newItem] })
 
     setData(key, [...ads, newItem]);
   };

@@ -9,17 +9,17 @@ import ChildCamp from './components/ChildCamp';
 import InfoCamp from './components/InfoCamp';
 import { useForm } from 'react-hook-form';
 
+export interface typeAds {
+  key: number;
+  name: string;
+  quantity: number;
+}
+
 export interface Campaigns {
   key: number;
   name: string;
   status: boolean;
-  ads: [
-    {
-      key: number;
-      name: string;
-      quantity: number;
-    }
-  ];
+  ads: typeAds[];
 }
 
 function App() {
