@@ -11,48 +11,37 @@ import {
 } from '@mui/material';
 import Tooltip from '@mui/material/Tooltip';
 import { useState } from 'react';
+import { Campaigns } from '../App';
 import TableAds from './TableAds';
 import './styles.css';
+import { FieldValues, UseFormRegister } from 'react-hook-form';
 
-export interface Campaigns {
-  key: number;
-  name: string;
-  status: boolean;
-  ads: [
-    {
-      key: number;
-      name: string;
-      quantity: number;
-    }
-  ];
+interface IChildCamp {
+  subCampaigns: Campaigns[];
+  setSubCampaigns: (e: Campaigns[]) => void;
+  register: UseFormRegister<FieldValues>;
+  errors: any;
 }
 
-const ChildCamp = () => {
+const ChildCamp = ({
+  subCampaigns,
+  setSubCampaigns,
+  register,
+  errors,
+}: IChildCamp) => {
   const [counter, setCounter] = useState(2);
-  const [subCampaigns, setSubCampaigns] = useState<Campaigns[]>([
-    {
-      key: 1,
-      name: 'Chiến dịch con 1',
-      status: true,
-      ads: [
-        {
-          key: 1,
-          name: 'Quảng cáo 1',
-          quantity: 0,
-        },
-      ],
-    },
-  ]);
+
   const [itemActiveCamp, setItemActiveCamp] = useState<Campaigns>(
     subCampaigns[0]
   );
 
-  console.log('subCampaigns', subCampaigns);
-
+  console.log('errors', errors);
+  // calculate Total Quantity
   function calculateTotalQuantity(items: any) {
     return items.reduce((total: any, item: any) => total + item.quantity, 0);
   }
 
+  // add subCamp
   const handleAddSubCampaigns = () => {
     setCounter(counter + 1);
     const newSubCam: Campaigns = {
@@ -70,7 +59,7 @@ const ChildCamp = () => {
     setSubCampaigns([...subCampaigns, newSubCam]);
   };
 
-  //Active Card when Clicked card
+  // active Card when Clicked card
   const handleCard = (key: number) => {
     const itemNew: Campaigns = subCampaigns.find(
       (item) => item.key === key
@@ -79,23 +68,31 @@ const ChildCamp = () => {
     setItemActiveCamp(itemNew);
   };
 
+  // change name of Camp
   const handleNameCamp = (key: number, e: any) => {
-    const newItem: Campaigns = subCampaigns.find(
-      (item) => item.key === key
-    ) as Campaigns;
-    if (newItem) {
-      newItem.name = e.target.value;
-    }
+    const newSubCampaign: any = subCampaigns.map((item: Campaigns) => {
+      if (item.key === key) {
+        return { ...item, name: e.target.value };
+      }
+      return item;
+    });
+
+    setSubCampaigns(newSubCampaign);
+
     setItemActiveCamp({ ...itemActiveCamp, name: e.target.value });
   };
 
+  //checked Child Camp
   const handleCheckedChildCamp = (key: number, e: any) => {
-    const newItem: Campaigns = subCampaigns.find(
-      (item) => item.key === key
-    ) as Campaigns;
-    if (newItem) {
-      newItem.status = e.target.checked;
-    }
+    const newSubCampaign: any = subCampaigns.map((item: Campaigns) => {
+      if (item.key === key) {
+        return { ...item, status: e.target.checked };
+      }
+      return item;
+    });
+
+    setSubCampaigns(newSubCampaign);
+
     setItemActiveCamp({ ...itemActiveCamp, status: e.target.checked });
   };
 
@@ -130,7 +127,7 @@ const ChildCamp = () => {
                 onClick={() => handleCard(item.key)}
               >
                 <Tooltip title={item.name} arrow placement='top'>
-                  <Typography style={{ padding: '10px' }}>
+                  <Typography className='titleCamp'>
                     {item.name}
                     <CheckCircleRoundedIcon
                       fontSize='small'
@@ -154,12 +151,20 @@ const ChildCamp = () => {
           {itemActiveCamp && (
             <>
               <TextField
+                {...register('nameOfChildCamp', {
+                  required: 'Dữ liệu không hợp lệ',
+                })}
                 fullWidth
-                required
+                error={!!errors?.nameOfChildCamp}
+                helperText={
+                  errors?.nameOfChildCamp
+                    ? errors.nameOfChildCamp.message?.toString()
+                    : ''
+                }
                 label='Tên chiến dịch con'
                 variant='standard'
+                required
                 value={itemActiveCamp.name}
-                // defaultValue={itemActiveCamp.name}
                 onChange={(e) => handleNameCamp(itemActiveCamp.key, e)}
               />
               <FormControlLabel
@@ -188,9 +193,10 @@ const ChildCamp = () => {
 
           <TableAds
             itemActiveCamp={itemActiveCamp}
-            setItemActiveCamp={setItemActiveCamp}
             subCampaigns={subCampaigns}
             setSubCampaigns={setSubCampaigns}
+            register={register}
+            errors={errors}
           />
         </Box>
       </Box>

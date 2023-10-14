@@ -9,21 +9,52 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import { useEffect, useState } from 'react';
+import { Campaigns } from '../App';
+import { FieldValues, UseFormRegister } from 'react-hook-form';
 
-export default function TableAds(props: any) {
-  const { itemActiveCamp, setItemActiveCamp, subCampaigns, setSubCampaigns } =
-    props;
-  const [counter, setCounter] = useState(2);
-  const [selected, setSelected] = useState<string[]>([]);
+interface ITableAds {
+  itemActiveCamp: Campaigns;
+  subCampaigns: Campaigns[];
+  setSubCampaigns: (e: Campaigns[]) => void;
+  register: UseFormRegister<FieldValues>;
+  errors: any;
+}
 
+interface typeAds {
+  key: number;
+  name: string;
+  quantity: number;
+}
+
+export default function TableAds({
+  itemActiveCamp,
+  subCampaigns,
+  setSubCampaigns,
+}: ITableAds) {
   useEffect(() => {
     setAds(itemActiveCamp?.ads);
-    setCounter(2);
+    setCounter(itemActiveCamp?.ads[itemActiveCamp?.ads.length - 1]?.key + 1);
   }, [itemActiveCamp]);
 
-  const initStateAds = itemActiveCamp?.ads || null;
+  const [counter, setCounter] = useState(
+    itemActiveCamp?.ads[itemActiveCamp?.ads.length - 1]?.key + 1
+  );
+  const [selected, setSelected] = useState<string[]>([]);
 
-  const [ads, setAds] = useState(initStateAds);
+  const initStateAds: typeAds[] = itemActiveCamp?.ads || null;
+
+  const [ads, setAds] = useState<typeAds[]>(initStateAds);
+
+  /////////////////////////////////////
+  const setData = (keyActive: number, newAds: typeAds[]) => {
+    const newSubCampaign: any = subCampaigns.map((item: Campaigns) => {
+      if (item.key === keyActive) {
+        return { ...item, ads: newAds };
+      }
+      return item;
+    });
+    setSubCampaigns(newSubCampaign);
+  };
 
   //Add Ads
   const handleAddItem = (key: number) => {
@@ -37,35 +68,28 @@ export default function TableAds(props: any) {
 
     setAds([...ads, newItem]);
 
-    const subCampaign: any = subCampaigns.find(
-      (item: any) => item.key === key
-    ) as any;
-    if (subCampaign) {
-      subCampaign.ads = [...ads, newItem];
-    }
+    setData(key, [...ads, newItem]);
   };
 
+  // checked all
   const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
-      const checkedAll = ads.map((item: any) => String(item.key));
+      const checkedAll = ads.map((item: typeAds) => String(item.key));
       setSelected(checkedAll);
     } else {
       setSelected([]);
     }
   };
 
-  const handleDeleteItem = (key: any, keySubCamp: number) => {
-    const deleteItem = ads.filter((item: any) => item.key !== key);
+  // delete item of ads
+  const handleDeleteItem = (key: number, keySubCamp: number) => {
+    const deleteItem = ads.filter((item: typeAds) => item.key !== key);
     setAds(deleteItem);
 
-    const subCampaign: any = subCampaigns.find(
-      (item: any) => item.key === keySubCamp
-    ) as any;
-    if (subCampaign) {
-      subCampaign.ads = deleteItem;
-    }
+    setData(keySubCamp, deleteItem);
   };
 
+  // checked item
   const handleCheckedItem = (e: React.ChangeEvent<HTMLInputElement>) => {
     const key = selected.indexOf(e.target.value);
     if (key === -1) {
@@ -75,40 +99,51 @@ export default function TableAds(props: any) {
     }
   };
 
+  // delete item checked
   const handleDeleteChecked = (key: number) => {
     const newItem = ads.filter(
-      (item: any) => !selected.includes(String(item.key))
+      (item: typeAds) => !selected.includes(String(item.key))
     );
     setAds(newItem);
 
-    const subCampaign: any = subCampaigns.find(
-      (item: any) => item.key === key
-    ) as any;
-    if (subCampaign) {
-      subCampaign.ads = newItem;
-    }
+    setData(key, newItem);
 
     setSelected([]);
   };
 
-  const handleQuantity = (key: number, e: any, keyActive: number) => {
-    console.log('e.target.value', e.target.value);
-    const newItem = ads.find((item: any) => item.key === key);
-    console.log('newItem', newItem);
-    if (newItem) {
-      newItem.quantity = e.target.value;
-    }
-    // setAds([...ads, newItem]);
+  // change quantity of ads
+  const handleQuantityOfAds = (
+    key: number,
+    e: React.ChangeEvent<HTMLInputElement>,
+    keyActive: number
+  ) => {
+    const newAds = ads.map((item: typeAds) => {
+      if (item.key === key) {
+        return { ...item, quantity: Number(e.target.value) };
+      }
+      return item;
+    });
+    setAds(newAds);
 
-    const subCampaign: any = subCampaigns.find(
-      (item: any) => item.key === keyActive
-    ) as any;
-    if (subCampaign) {
-      subCampaign.ads = newItem;
-    }
+    setData(keyActive, newAds);
   };
 
-  console.log('ads', ads);
+  //change name of ads
+  const handleNameOfAds = (
+    key: number,
+    e: React.ChangeEvent<HTMLInputElement>,
+    keyActive: number
+  ) => {
+    const newAds = ads.map((item: typeAds) => {
+      if (item.key === key) {
+        return { ...item, name: e.target.value };
+      }
+      return item;
+    });
+    setAds(newAds);
+
+    setData(keyActive, newAds);
+  };
 
   return (
     <TableContainer component={Paper}>
@@ -153,7 +188,8 @@ export default function TableAds(props: any) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {ads?.map((item: any) => {
+          {ads?.map((item: typeAds) => {
+            console.log('item.quantity', item.quantity);
             return (
               <TableRow
                 key={item.key}
@@ -175,21 +211,24 @@ export default function TableAds(props: any) {
                 <TableCell>
                   <TextField
                     required
+                    error={item.name.trim() === ''}
                     variant='standard'
                     fullWidth
-                    defaultValue={item.name}
-                    // value={item.name}
+                    value={item.name}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                      handleNameOfAds(item.key, e, itemActiveCamp.key)
+                    }
                   />
                 </TableCell>
                 <TableCell>
                   <TextField
                     type='number'
                     required
+                    error={item.quantity < 0 || item.quantity === 0}
                     variant='standard'
                     fullWidth
-                    // defaultValue={item.quantity}
-                    onChange={(e) =>
-                      handleQuantity(item.key, e, itemActiveCamp.key)
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                      handleQuantityOfAds(item.key, e, itemActiveCamp.key)
                     }
                     value={item.quantity}
                   />

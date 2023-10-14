@@ -1,10 +1,43 @@
 import { Box, TextField } from '@mui/material';
+import { FieldValues, UseFormRegister } from 'react-hook-form';
 
-const InfoCamp = () => {
+interface IInfoCamp {
+  inputs: {
+    name: string;
+    describe: string;
+  };
+  handleChangeInput: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  register: UseFormRegister<FieldValues>;
+  errors: any;
+}
+
+const InfoCamp = ({
+  inputs,
+  handleChangeInput,
+  register,
+  errors,
+}: IInfoCamp) => {
   return (
     <Box>
-      <TextField required label='Tên chiến dịch' variant='standard' fullWidth />
-      <TextField label='Mô tả' variant='standard' fullWidth />
+      <TextField
+        {...register('name', { required: 'Dữ liệu không hợp lệ' })}
+        error={!!errors?.name}
+        helperText={errors?.name ? errors.name.message?.toString() : ''}
+        required
+        label='Tên chiến dịch'
+        variant='standard'
+        fullWidth
+        value={inputs.name}
+        onChange={handleChangeInput}
+      />
+      <TextField
+        label='Mô tả'
+        variant='standard'
+        fullWidth
+        value={inputs.describe}
+        onChange={handleChangeInput}
+        name='describe'
+      />
     </Box>
   );
 };
