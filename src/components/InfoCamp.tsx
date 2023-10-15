@@ -7,27 +7,26 @@ interface IInfoCamp {
     describe: string;
   };
   handleChangeInput: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  register: UseFormRegister<FieldValues>;
-  errors: any;
+  error: boolean;
 }
 
 const InfoCamp = ({
   inputs,
   handleChangeInput,
-  register,
-  errors,
+  error
 }: IInfoCamp) => {
   return (
     <Box>
       <TextField
-        {...register('name', { required: 'Dữ liệu không hợp lệ' })}
+        // {...register('name', { required: 'Dữ liệu không hợp lệ' })}
         label='Tên chiến dịch'
         variant='standard'
         fullWidth
         value={inputs.name}
         onChange={handleChangeInput}
-        error={!!errors?.name}
-        helperText={errors?.name ? errors.name.message?.toString() : ''}
+        name='name'
+        error={error}
+        helperText={error ? 'Dữ liệu không hợp lệ' : ''}
         required
       />
       <TextField

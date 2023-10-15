@@ -17,8 +17,10 @@ interface ITableAds {
   setItemActiveCamp: (e: Campaigns) => void;
   subCampaigns: Campaigns[];
   setSubCampaigns: (e: Campaigns[]) => void;
-  register: UseFormRegister<FieldValues>;
-  errors: any;
+  errorNameAds: boolean;
+  setErrorNameAds: (e: boolean) => void
+  errorQuantity: boolean;
+  setErrorQuantity: (e: boolean) => void
 }
 
 export default function TableAds({
@@ -26,6 +28,8 @@ export default function TableAds({
   setItemActiveCamp,
   subCampaigns,
   setSubCampaigns,
+  errorNameAds, setErrorNameAds,
+  errorQuantity, setErrorQuantity,
 }: ITableAds) {
   useEffect(() => {
     setAds(itemActiveCamp?.ads);
@@ -66,8 +70,6 @@ export default function TableAds({
     };
 
     setAds([...ads, newItem]);
-
-    console.log('itemActiveCamp', itemActiveCamp)
 
     //Thêm cả ở thằng đang active nữa
     setItemActiveCamp({ ...itemActiveCamp, ads: [...ads, newItem] })
@@ -130,6 +132,8 @@ export default function TableAds({
     setAds(newAds);
 
     setData(keyActive, newAds);
+
+    setErrorQuantity(false);
   };
 
   //change name of ads
@@ -147,6 +151,9 @@ export default function TableAds({
     setAds(newAds);
 
     setData(keyActive, newAds);
+
+    setErrorNameAds(false);
+
   };
 
   return (
@@ -213,8 +220,9 @@ export default function TableAds({
                 </TableCell>
                 <TableCell>
                   <TextField
+                    name='nameOfAds'
                     required
-                    error={item.name.trim() === ''}
+                    error={errorNameAds}
                     variant='standard'
                     fullWidth
                     value={item.name}
@@ -225,9 +233,10 @@ export default function TableAds({
                 </TableCell>
                 <TableCell>
                   <TextField
+                    name='quantityOfAds'
                     type='number'
                     required
-                    error={item.quantity < 0}
+                    error={errorQuantity}
                     variant='standard'
                     fullWidth
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) =>

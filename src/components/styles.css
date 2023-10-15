@@ -15,15 +15,15 @@
 
 .titleCamp {
   line-height: 20px;
-  text-align: left;
   letter-spacing: 0;
-  display: -webkit-box;
-  overflow: hidden !important;
-  text-overflow: ellipsis;
-  -webkit-box-orient: vertical;
-  height: 40px;
-  -webkit-line-clamp: 2;
-  white-space: normal;
+  /* display: -webkit-box; */
+  /* overflow: hidden !important; */
+  /* text-overflow: ellipsis; */
+  /* -webkit-box-orient: vertical; */
+  height: 30px;
   padding: 10px;
-  text-align: center;
+  /* -webkit-line-clamp: 2; */
+  /* white-space: normal;
+  padding: 10px;
+  text-align: center; */
 }

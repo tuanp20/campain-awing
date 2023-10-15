@@ -19,15 +19,20 @@ import { FieldValues, UseFormRegister } from 'react-hook-form';
 interface IChildCamp {
   subCampaigns: Campaigns[];
   setSubCampaigns: (e: Campaigns[]) => void;
-  register: UseFormRegister<FieldValues>;
-  errors: any;
+  errorSubCamp: boolean;
+  setErrorSubCamp: (e: boolean) => void
+  errorNameAds: boolean;
+  setErrorNameAds: (e: boolean) => void
+  errorQuantity: boolean;
+  setErrorQuantity: (e: boolean) => void
 }
 
 const ChildCamp = ({
   subCampaigns,
   setSubCampaigns,
-  register,
-  errors,
+  errorSubCamp, setErrorSubCamp,
+  errorNameAds, setErrorNameAds,
+  errorQuantity, setErrorQuantity,
 }: IChildCamp) => {
   const [counter, setCounter] = useState(2);
 
@@ -69,13 +74,18 @@ const ChildCamp = ({
 
   // change name of Camp
   const handleNameCamp = (key: number, e: any) => {
-    const newItem: Campaigns = subCampaigns.find(
-      (item) => item.key === key
-    ) as Campaigns;
-    if (newItem) {
-      newItem.name = e.target.value;
-    }
+    const newSubCampaign: any = subCampaigns.map((item: Campaigns) => {
+      if (item.key === key) {
+        return { ...item, name: e.target.value };
+      }
+      return item;
+    });
+
+    setSubCampaigns(newSubCampaign);
+
     setItemActiveCamp({ ...itemActiveCamp, name: e.target.value });
+
+    setErrorSubCamp(false);
   };
 
   //checked Child Camp
@@ -90,7 +100,11 @@ const ChildCamp = ({
     setItemActiveCamp({ ...itemActiveCamp, status: e.target.checked });
   };
 
-  console.log('itemActiveCamp', itemActiveCamp);
+  //function short text
+  const shortText = (text: string) => {
+    const resultText = text.length > 45 ? text.slice(0, 45) + '...' : text
+    return resultText;
+  }
 
   return (
     <Box>
@@ -124,7 +138,7 @@ const ChildCamp = ({
               >
                 <Tooltip title={item.name} arrow placement='top'>
                   <Typography className='titleCamp'>
-                    {item.name}
+                    {shortText(item.name)}
                     <CheckCircleRoundedIcon
                       fontSize='small'
                       color={item.status ? 'success' : 'action'}
@@ -147,21 +161,28 @@ const ChildCamp = ({
           {itemActiveCamp && (
             <>
               <TextField
-                {...register('nameOfChildCamp', {
-                  required: 'Dữ liệu không hợp lệ',
-                })}
+                // {...register('nameOfChildCamp', {
+                //   required: 'Dữ liệu không hợp lệ',
+                // })}
                 fullWidth
-                error={!!errors?.nameOfChildCamp}
-                helperText={
-                  errors?.nameOfChildCamp
-                    ? errors.nameOfChildCamp.message?.toString()
-                    : ''
-                }
+                // error={!!errors?.nameOfChildCamp}
+                // helperText={
+                //   errors?.nameOfChildCamp
+                //     ? errors.nameOfChildCamp.message?.toString()
+                //     : ''
+                // }
+                name='subCamp'
                 label='Tên chiến dịch con'
                 variant='standard'
                 required
                 value={itemActiveCamp.name}
                 onChange={(e) => handleNameCamp(itemActiveCamp.key, e)}
+                error={errorSubCamp}
+                helperText={
+                  errorSubCamp
+                    ? "Dữ liệu không hợp lệ"
+                    : ''
+                }
               />
               <FormControlLabel
                 control={
@@ -192,8 +213,10 @@ const ChildCamp = ({
             setItemActiveCamp={setItemActiveCamp}
             subCampaigns={subCampaigns}
             setSubCampaigns={setSubCampaigns}
-            register={register}
-            errors={errors}
+            errorNameAds={errorNameAds}
+            setErrorNameAds={setErrorNameAds}
+            errorQuantity={errorQuantity}
+            setErrorQuantity={setErrorQuantity}
           />
         </Box>
       </Box>

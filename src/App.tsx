@@ -8,6 +8,7 @@ import './App.css';
 import ChildCamp from './components/ChildCamp';
 import InfoCamp from './components/InfoCamp';
 import { useForm } from 'react-hook-form';
+import { CleaningServices, TroubleshootOutlined } from '@mui/icons-material';
 
 export interface typeAds {
   key: number;
@@ -43,6 +44,9 @@ function App() {
     },
   ]);
   const [error, setError] = useState<boolean>(false);
+  const [errorSubCamp, setErrorSubCamp] = useState<boolean>(false);
+  const [errorNameAds, setErrorNameAds] = useState<boolean>(false);
+  const [errorQuantity, setErrorQuantity] = useState<boolean>(false);
 
   // handle when change tab
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
@@ -55,17 +59,40 @@ function App() {
       ...prevState,
       [e.target.name]: e.target.value,
     }));
+    setError(false);
   };
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
-
   //onSubmit form and format data
-  const onSubmit = (data: any) => {
-    console.log('data', data);
+  const onSubmit = (event: any) => {
+    event.preventDefault();
+    if (inputs.name.length < 0 || inputs.name.trim() === '') {
+      setError(true);
+      alert('Thông tin chưa được điền');
+      return;
+    }
+
+    subCampaigns.map((itemSub: any) => {
+      // event.preventDefault();
+
+      if (itemSub.name.length < 0 || itemSub.name.trim() === '') {
+        setErrorSubCamp(true);
+        alert('Thông tin chưa được điền');
+        return;
+      }
+      itemSub.ads.map((itemAds: any) => {
+        if (itemAds.name.length < 0 || itemAds.name.trim() === '') {
+          setErrorNameAds(true);
+          alert('Thông tin chưa được điền');
+          return;
+        }
+        if (itemAds.quantity < 0 || itemAds.quantity === 0) {
+          setErrorQuantity(true);
+          alert('Thông tin chưa được điền');
+          return;
+        }
+      });
+    });
+
 
     const newSubCampaigns = subCampaigns.map((itemSub: any) => {
       delete itemSub.key;
@@ -88,7 +115,7 @@ function App() {
       <Box
         component={'form'}
         noValidate={true}
-        onSubmit={handleSubmit(onSubmit)}
+        onSubmit={onSubmit}
       >
         <Button variant='contained' style={{ margin: 10 }} type='submit'>
           Submit
@@ -106,16 +133,19 @@ function App() {
               <InfoCamp
                 inputs={inputs}
                 handleChangeInput={handleChangeInput}
-                register={register}
-                errors={errors}
+                error={error}
               />
             </TabPanel>
             <TabPanel value='2'>
               <ChildCamp
                 subCampaigns={subCampaigns}
                 setSubCampaigns={setSubCampaigns}
-                register={register}
-                errors={errors}
+                errorSubCamp={errorSubCamp}
+                setErrorSubCamp={setErrorSubCamp}
+                errorNameAds={errorNameAds}
+                setErrorNameAds={setErrorNameAds}
+                errorQuantity={errorQuantity}
+                setErrorQuantity={setErrorQuantity}
               />
             </TabPanel>
           </TabContext>
