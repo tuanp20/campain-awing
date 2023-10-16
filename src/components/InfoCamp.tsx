@@ -1,5 +1,4 @@
 import { Box, TextField } from '@mui/material';
-import { FieldValues, UseFormRegister } from 'react-hook-form';
 
 interface IInfoCamp {
   inputs: {
@@ -10,11 +9,7 @@ interface IInfoCamp {
   error: boolean;
 }
 
-const InfoCamp = ({
-  inputs,
-  handleChangeInput,
-  error
-}: IInfoCamp) => {
+const InfoCamp = ({ inputs, handleChangeInput, error }: IInfoCamp) => {
   return (
     <Box>
       <TextField

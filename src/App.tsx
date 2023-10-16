@@ -1,14 +1,12 @@
 import { TabContext } from '@mui/lab';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
-import { Box, Card, Divider, Tab, TextField } from '@mui/material';
+import { Box, Card, Divider, Tab } from '@mui/material';
 import Button from '@mui/material/Button';
 import React, { useState } from 'react';
 import './App.css';
 import ChildCamp from './components/ChildCamp';
 import InfoCamp from './components/InfoCamp';
-import { useForm } from 'react-hook-form';
-import { CleaningServices, TroubleshootOutlined } from '@mui/icons-material';
 
 export interface typeAds {
   key: number;
@@ -23,13 +21,18 @@ export interface Campaigns {
   ads: typeAds[];
 }
 
+interface IInputs {
+  name: string;
+  describe: string;
+}
+
 function App() {
-  const [value, setValue] = useState<string>('1');
-  const [inputs, setInputs] = useState({
+  const initInputs: IInputs = {
     name: '',
     describe: '',
-  });
-  const [subCampaigns, setSubCampaigns] = useState<Campaigns[]>([
+  };
+
+  const initSubCampaigns: Campaigns[] = [
     {
       key: 1,
       name: 'Chiến dịch con 1',
@@ -42,7 +45,12 @@ function App() {
         },
       ],
     },
-  ]);
+  ];
+
+  const [value, setValue] = useState<string>('1');
+  const [inputs, setInputs] = useState(initInputs);
+  const [subCampaigns, setSubCampaigns] =
+    useState<Campaigns[]>(initSubCampaigns);
   const [error, setError] = useState<boolean>(false);
   const [errorSubCamp, setErrorSubCamp] = useState<boolean>(false);
   const [errorNameAds, setErrorNameAds] = useState<boolean>(false);
@@ -67,32 +75,33 @@ function App() {
     event.preventDefault();
     if (inputs.name.length < 0 || inputs.name.trim() === '') {
       setError(true);
-      alert('Thông tin chưa được điền');
-      return;
+      alert('Vui lòng điền đúng và đầy đủ thông tin');
+      return false;
     }
 
+    let valid = true;
     subCampaigns.map((itemSub: any) => {
-      // event.preventDefault();
-
       if (itemSub.name.length < 0 || itemSub.name.trim() === '') {
         setErrorSubCamp(true);
-        alert('Thông tin chưa được điền');
-        return;
+        alert('Vui lòng điền đúng và đầy đủ thông tin 1');
+        valid = false;
       }
+
       itemSub.ads.map((itemAds: any) => {
         if (itemAds.name.length < 0 || itemAds.name.trim() === '') {
           setErrorNameAds(true);
-          alert('Thông tin chưa được điền');
-          return;
+          alert('Vui lòng điền đúng và đầy đủ thông tin 2');
+          valid = false;
         }
         if (itemAds.quantity < 0 || itemAds.quantity === 0) {
           setErrorQuantity(true);
-          alert('Thông tin chưa được điền');
-          return;
+          alert('Vui lòng điền đúng và đầy đủ thông tin 3');
+          valid = false;
         }
       });
     });
 
+    if (!valid) return false;
 
     const newSubCampaigns = subCampaigns.map((itemSub: any) => {
       delete itemSub.key;
@@ -108,15 +117,14 @@ function App() {
     };
 
     alert(JSON.stringify(newData));
+
+    setInputs(initInputs);
+    setSubCampaigns(initSubCampaigns);
   };
 
   return (
     <>
-      <Box
-        component={'form'}
-        noValidate={true}
-        onSubmit={onSubmit}
-      >
+      <Box component={'form'} noValidate={true} onSubmit={onSubmit}>
         <Button variant='contained' style={{ margin: 10 }} type='submit'>
           Submit
         </Button>

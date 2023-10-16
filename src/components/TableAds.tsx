@@ -18,9 +18,9 @@ interface ITableAds {
   subCampaigns: Campaigns[];
   setSubCampaigns: (e: Campaigns[]) => void;
   errorNameAds: boolean;
-  setErrorNameAds: (e: boolean) => void
+  setErrorNameAds: (e: boolean) => void;
   errorQuantity: boolean;
-  setErrorQuantity: (e: boolean) => void
+  setErrorQuantity: (e: boolean) => void;
 }
 
 export default function TableAds({
@@ -28,12 +28,16 @@ export default function TableAds({
   setItemActiveCamp,
   subCampaigns,
   setSubCampaigns,
-  errorNameAds, setErrorNameAds,
-  errorQuantity, setErrorQuantity,
+  errorNameAds,
+  setErrorNameAds,
+  errorQuantity,
+  setErrorQuantity,
 }: ITableAds) {
   useEffect(() => {
     setAds(itemActiveCamp?.ads);
-    setCounter(itemActiveCamp?.ads[itemActiveCamp?.ads.length - 1]?.key + 1 || 1);
+    setCounter(
+      itemActiveCamp?.ads[itemActiveCamp?.ads.length - 1]?.key + 1 || 1
+    );
   }, [itemActiveCamp]);
 
   const [counter, setCounter] = useState(
@@ -54,7 +58,7 @@ export default function TableAds({
       return item;
     });
 
-    setItemActiveCamp({ ...itemActiveCamp, ads: newAds })
+    setItemActiveCamp({ ...itemActiveCamp, ads: newAds });
 
     setSubCampaigns(newSubCampaign);
   };
@@ -72,7 +76,7 @@ export default function TableAds({
     setAds([...ads, newItem]);
 
     //Thêm cả ở thằng đang active nữa
-    setItemActiveCamp({ ...itemActiveCamp, ads: [...ads, newItem] })
+    setItemActiveCamp({ ...itemActiveCamp, ads: [...ads, newItem] });
 
     setData(key, [...ads, newItem]);
   };
@@ -153,7 +157,6 @@ export default function TableAds({
     setData(keyActive, newAds);
 
     setErrorNameAds(false);
-
   };
 
   return (
