@@ -13,17 +13,6 @@
   border-color: rgb(33, 150, 243);
 }
 
-.titleCamp {
-  line-height: 20px;
-  letter-spacing: 0;
-  /* display: -webkit-box; */
-  /* overflow: hidden !important; */
-  /* text-overflow: ellipsis; */
-  /* -webkit-box-orient: vertical; */
-  height: 30px;
-  padding: 10px;
-  /* -webkit-line-clamp: 2; */
-  /* white-space: normal;
-  padding: 10px;
-  text-align: center; */
+.textError {
+  color: red;
 }

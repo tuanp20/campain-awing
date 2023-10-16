@@ -14,32 +14,32 @@ import { useState } from 'react';
 import { Campaigns } from '../App';
 import TableAds from './TableAds';
 import './styles.css';
-import { FieldValues, UseFormRegister } from 'react-hook-form';
 
 interface IChildCamp {
   subCampaigns: Campaigns[];
   setSubCampaigns: (e: Campaigns[]) => void;
   errorSubCamp: boolean;
-  setErrorSubCamp: (e: boolean) => void
+  setErrorSubCamp: (e: boolean) => void;
   errorNameAds: boolean;
-  setErrorNameAds: (e: boolean) => void
+  setErrorNameAds: (e: boolean) => void;
   errorQuantity: boolean;
-  setErrorQuantity: (e: boolean) => void
+  setErrorQuantity: (e: boolean) => void;
 }
 
 const ChildCamp = ({
   subCampaigns,
   setSubCampaigns,
-  errorSubCamp, setErrorSubCamp,
-  errorNameAds, setErrorNameAds,
-  errorQuantity, setErrorQuantity,
+  errorSubCamp,
+  setErrorSubCamp,
+  errorNameAds,
+  setErrorNameAds,
+  errorQuantity,
+  setErrorQuantity,
 }: IChildCamp) => {
   const [counter, setCounter] = useState(2);
-
   const [itemActiveCamp, setItemActiveCamp] = useState<Campaigns>(
     subCampaigns[0]
   );
-
   // calculate Total Quantity
   function calculateTotalQuantity(items: any) {
     return items.reduce((total: any, item: any) => total + item.quantity, 0);
@@ -102,9 +102,9 @@ const ChildCamp = ({
 
   //function short text
   const shortText = (text: string) => {
-    const resultText = text.length > 45 ? text.slice(0, 45) + '...' : text
+    const resultText = text.length > 40 ? text.slice(0, 40) + '...' : text;
     return resultText;
-  }
+  };
 
   return (
     <Box>
@@ -137,7 +137,11 @@ const ChildCamp = ({
                 onClick={() => handleCard(item.key)}
               >
                 <Tooltip title={item.name} arrow placement='top'>
-                  <Typography className='titleCamp'>
+                  <Typography
+                    style={{ padding: '10px' }}
+                    color={errorNameAds || errorQuantity ? 'red' : ''}
+                    // color={'red'}
+                  >
                     {shortText(item.name)}
                     <CheckCircleRoundedIcon
                       fontSize='small'
@@ -161,16 +165,7 @@ const ChildCamp = ({
           {itemActiveCamp && (
             <>
               <TextField
-                // {...register('nameOfChildCamp', {
-                //   required: 'Dữ liệu không hợp lệ',
-                // })}
                 fullWidth
-                // error={!!errors?.nameOfChildCamp}
-                // helperText={
-                //   errors?.nameOfChildCamp
-                //     ? errors.nameOfChildCamp.message?.toString()
-                //     : ''
-                // }
                 name='subCamp'
                 label='Tên chiến dịch con'
                 variant='standard'
@@ -178,11 +173,7 @@ const ChildCamp = ({
                 value={itemActiveCamp.name}
                 onChange={(e) => handleNameCamp(itemActiveCamp.key, e)}
                 error={errorSubCamp}
-                helperText={
-                  errorSubCamp
-                    ? "Dữ liệu không hợp lệ"
-                    : ''
-                }
+                helperText={errorSubCamp ? 'Dữ liệu không hợp lệ' : ''}
               />
               <FormControlLabel
                 control={

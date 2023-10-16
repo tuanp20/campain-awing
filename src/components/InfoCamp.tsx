@@ -1,27 +1,28 @@
 import { Box, TextField } from '@mui/material';
+import { IInputs } from '../App';
 
 interface IInfoCamp {
-  inputs: {
-    name: string;
-    describe: string;
-  };
+  inputs: IInputs;
   handleChangeInput: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  error: boolean;
+  errorNameOfCamp: boolean;
 }
 
-const InfoCamp = ({ inputs, handleChangeInput, error }: IInfoCamp) => {
+const InfoCamp = ({
+  inputs,
+  handleChangeInput,
+  errorNameOfCamp,
+}: IInfoCamp) => {
   return (
     <Box>
       <TextField
-        // {...register('name', { required: 'Dữ liệu không hợp lệ' })}
         label='Tên chiến dịch'
         variant='standard'
         fullWidth
         value={inputs.name}
         onChange={handleChangeInput}
         name='name'
-        error={error}
-        helperText={error ? 'Dữ liệu không hợp lệ' : ''}
+        error={errorNameOfCamp}
+        helperText={errorNameOfCamp ? 'Dữ liệu không hợp lệ' : ''}
         required
       />
       <TextField

@@ -21,7 +21,7 @@ export interface Campaigns {
   ads: typeAds[];
 }
 
-interface IInputs {
+export interface IInputs {
   name: string;
   describe: string;
 }
@@ -51,7 +51,7 @@ function App() {
   const [inputs, setInputs] = useState(initInputs);
   const [subCampaigns, setSubCampaigns] =
     useState<Campaigns[]>(initSubCampaigns);
-  const [error, setError] = useState<boolean>(false);
+  const [errorNameOfCamp, setErrorNameOfCamp] = useState<boolean>(false);
   const [errorSubCamp, setErrorSubCamp] = useState<boolean>(false);
   const [errorNameAds, setErrorNameAds] = useState<boolean>(false);
   const [errorQuantity, setErrorQuantity] = useState<boolean>(false);
@@ -67,35 +67,36 @@ function App() {
       ...prevState,
       [e.target.name]: e.target.value,
     }));
-    setError(false);
+    setErrorNameOfCamp(false);
   };
 
   //onSubmit form and format data
   const onSubmit = (event: any) => {
     event.preventDefault();
+    let valid = true;
+
     if (inputs.name.length < 0 || inputs.name.trim() === '') {
-      setError(true);
-      alert('Vui lòng điền đúng và đầy đủ thông tin');
-      return false;
+      setErrorNameOfCamp(true);
+      alert('Vui lòng điền đúng và đầy đủ thông tin 1111');
+      valid = false;
     }
 
-    let valid = true;
     subCampaigns.map((itemSub: any) => {
       if (itemSub.name.length < 0 || itemSub.name.trim() === '') {
         setErrorSubCamp(true);
-        alert('Vui lòng điền đúng và đầy đủ thông tin 1');
+        alert('Vui lòng điền đúng và đầy đủ thông tin');
         valid = false;
       }
 
       itemSub.ads.map((itemAds: any) => {
         if (itemAds.name.length < 0 || itemAds.name.trim() === '') {
           setErrorNameAds(true);
-          alert('Vui lòng điền đúng và đầy đủ thông tin 2');
+          alert('Vui lòng điền đúng và đầy đủ thông tin');
           valid = false;
         }
         if (itemAds.quantity < 0 || itemAds.quantity === 0) {
           setErrorQuantity(true);
-          alert('Vui lòng điền đúng và đầy đủ thông tin 3');
+          alert('Vui lòng điền đúng và đầy đủ thông tin');
           valid = false;
         }
       });
@@ -103,6 +104,7 @@ function App() {
 
     if (!valid) return false;
 
+    //handle data
     const newSubCampaigns = subCampaigns.map((itemSub: any) => {
       delete itemSub.key;
       itemSub.ads.map((itemAds: any) => {
@@ -118,8 +120,8 @@ function App() {
 
     alert(JSON.stringify(newData));
 
-    setInputs(initInputs);
-    setSubCampaigns(initSubCampaigns);
+    // setInputs(initInputs);
+    // setSubCampaigns(initSubCampaigns);
   };
 
   return (
@@ -141,7 +143,7 @@ function App() {
               <InfoCamp
                 inputs={inputs}
                 handleChangeInput={handleChangeInput}
-                error={error}
+                errorNameOfCamp={errorNameOfCamp}
               />
             </TabPanel>
             <TabPanel value='2'>
