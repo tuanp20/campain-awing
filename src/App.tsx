@@ -77,32 +77,31 @@ function App() {
 
     if (inputs.name.length < 0 || inputs.name.trim() === '') {
       setErrorNameOfCamp(true);
-      alert('Vui lòng điền đúng và đầy đủ thông tin 1111');
       valid = false;
     }
 
     subCampaigns.map((itemSub: any) => {
       if (itemSub.name.length < 0 || itemSub.name.trim() === '') {
         setErrorSubCamp(true);
-        alert('Vui lòng điền đúng và đầy đủ thông tin');
         valid = false;
       }
 
       itemSub.ads.map((itemAds: any) => {
         if (itemAds.name.length < 0 || itemAds.name.trim() === '') {
           setErrorNameAds(true);
-          alert('Vui lòng điền đúng và đầy đủ thông tin');
           valid = false;
         }
         if (itemAds.quantity < 0 || itemAds.quantity === 0) {
           setErrorQuantity(true);
-          alert('Vui lòng điền đúng và đầy đủ thông tin');
           valid = false;
         }
       });
     });
 
-    if (!valid) return false;
+    if (!valid) {
+      alert('Vui lòng điền đúng và đầy đủ thông tin');
+      return false;
+    }
 
     //handle data
     const newSubCampaigns = subCampaigns.map((itemSub: any) => {
@@ -120,8 +119,9 @@ function App() {
 
     alert(JSON.stringify(newData));
 
-    // setInputs(initInputs);
-    // setSubCampaigns(initSubCampaigns);
+    setInputs(initInputs);
+    setSubCampaigns(initSubCampaigns);
+    setValue('1');
   };
 
   return (

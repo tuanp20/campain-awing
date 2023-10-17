@@ -38,12 +38,17 @@ export default function TableAds({
       itemActiveCamp?.ads[itemActiveCamp?.ads.length - 1]?.key + 1 || 1
     );
   }, [itemActiveCamp]);
+
   const [counter, setCounter] = useState(
     itemActiveCamp?.ads[itemActiveCamp?.ads.length - 1]?.key + 1 || 1
   );
   const [selected, setSelected] = useState<string[]>([]);
+
   const initStateAds: typeAds[] = itemActiveCamp?.ads || null;
+
   const [ads, setAds] = useState<typeAds[]>(initStateAds);
+
+  /////////////////////////////////////
   const setData = (keyActive: number, newAds: typeAds[]) => {
     const newSubCampaign: any = subCampaigns.map((item: Campaigns) => {
       if (item.key === keyActive) {
@@ -51,20 +56,27 @@ export default function TableAds({
       }
       return item;
     });
+
     setItemActiveCamp({ ...itemActiveCamp, ads: newAds });
+
     setSubCampaigns(newSubCampaign);
   };
 
-  //add Ads
+  //Add Ads
   const handleAddItem = (key: number) => {
     setCounter(counter + 1);
+
     const newItem = {
       key: counter,
       name: `Quảng cáo ${counter}`,
       quantity: 0,
     };
+
     setAds([...ads, newItem]);
+
+    //Thêm cả ở thằng đang active nữa
     setItemActiveCamp({ ...itemActiveCamp, ads: [...ads, newItem] });
+
     setData(key, [...ads, newItem]);
   };
 
@@ -82,6 +94,7 @@ export default function TableAds({
   const handleDeleteItem = (key: number, keySubCamp: number) => {
     const deleteItem = ads.filter((item: typeAds) => item.key !== key);
     setAds(deleteItem);
+
     setData(keySubCamp, deleteItem);
   };
 
@@ -101,7 +114,9 @@ export default function TableAds({
       (item: typeAds) => !selected.includes(String(item.key))
     );
     setAds(newItem);
+
     setData(key, newItem);
+
     setSelected([]);
   };
 
@@ -118,7 +133,9 @@ export default function TableAds({
       return item;
     });
     setAds(newAds);
+
     setData(keyActive, newAds);
+
     setErrorQuantity(false);
   };
 
@@ -135,8 +152,10 @@ export default function TableAds({
       return item;
     });
     setAds(newAds);
+
     setData(keyActive, newAds);
-    // setErrorNameAds(false);
+
+    setErrorNameAds(false);
   };
 
   return (
