@@ -85,6 +85,9 @@ function App() {
         setErrorSubCamp(true);
         valid = false;
       }
+      if (itemSub.ads.length === 0) {
+        valid = false;
+      }
 
       itemSub.ads.map((itemAds: any) => {
         if (itemAds.name.length < 0 || itemAds.name.trim() === '') {
